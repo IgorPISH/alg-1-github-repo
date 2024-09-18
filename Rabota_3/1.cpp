@@ -76,16 +76,16 @@ VectorData readDataFromFile(const string& filepath) {
 }
 
 // Функция для сложения двух векторов
-VectorData addVectors(const VectorData& vec1, const VectorData& vec2) {
+VectorData Calck_vv_sum(const VectorData& vec1, const VectorData& vec2) {
     // Проверка на равенство размерностей
     if (vec1.size != vec2.size) {
         logAll("Ошибка! Размерность векторов не совпадает");
-        return VectorData(); // Возвращаем пустой вектор в случае ошибки
+        return VectorData();
     }
 
-    VectorData result;
-    result.size = vec1.size;
-    result.values.resize(result.size);
+    VectorData result; // Создаем объект для хранения результата сложения векторов
+    result.size = vec1.size; // Устанавливаем размер результирующего вектора равным размеру первого вектора
+    result.values.resize(result.size); // Изменяем размер массива значений результирующего вектора
 
     // Сложение векторов
     for (int i = 0; i < result.size; ++i) {
@@ -105,13 +105,13 @@ int main(int argc, char* argv[])
         if (string(argv[i]) == "--fp1") {
             if (i + 1 < argc) { // Проверка границ
                 calcParams.filePath1 = argv[i + 1];
-                logAll("File Path 1: " + calcParams.filePath1);
+                logAll("Путь к файлу 1: " + calcParams.filePath1);
                 vector1 = readDataFromFile(calcParams.filePath1);
             }
         }if (string(argv[i]) == "--fp2") {
             if (i + 1 < argc) { // Проверка границ
                 calcParams.filePath2 = argv[i + 1];
-                logAll("File Path 2: " + calcParams.filePath2);
+                logAll("Путь к файлу 2: " + calcParams.filePath2);
                 vector2 = readDataFromFile(calcParams.filePath2);
             }
         }if (string(argv[i]) == "--op") {
@@ -119,9 +119,9 @@ int main(int argc, char* argv[])
                 string operation = argv[i + 1];
                 if (operation == "vv_sum") {
                     calcParams.op = CalcProblemParams::operations::vv_sum;
-                    logAll("Operation call: vector sum");
+                    logAll("Вызвана операция: суммирование векторов");
                     // Сложение векторов
-                    VectorData result = addVectors(vector1, vector2);
+                    VectorData result = Calck_vv_sum(vector1, vector2);
                     if (result.size > 0) {
                         cout << "Resulting vector: ";
                         for (const auto& value : result.values) {
@@ -131,15 +131,15 @@ int main(int argc, char* argv[])
                     }
                 } else if (operation == "vv_sub") {
                     calcParams.op = CalcProblemParams::operations::vv_sub;
-                    logAll("Operation call: vector sub");
+                    logAll("Вызвана операция: вычитание векторов");
                 } else if (operation == "vv_scMalt") {
                     calcParams.op = CalcProblemParams::operations::vv_scMalt;
-                    logAll("Operation call: vector scMath");
+                    logAll("Вызвана операция: переумножение векторов");
                 } else {
-                    logAll("Error: Unknown operation");
+                    logAll("Ошибка: неизвестная операция");
                 }
             } else {
-                logAll("Error: No value provided for --o");
+                logAll("Ошибка нет аргументов после --o");
             }
         }
     }
