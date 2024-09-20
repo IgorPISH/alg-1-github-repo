@@ -29,7 +29,7 @@ struct ExportConfig {
     string path; // Путь к файлу
 };
 
-struct CalcResult {
+struct CalcResults {
     VectorData result; // Результат сложения векторов
 };
 
@@ -123,7 +123,7 @@ VectorData Calck_vv_sub(const VectorData& vec1, const VectorData& vec2) {
     return result;
 }
 
-int Export(const ExportConfig& config, const CalcResult& calcResult) {
+int Export(const CalcResults& calcResults, const ExportConfig& config) {
     // Создаю файл и открываю его на дозапись
     logAll("Открываю " +config.path);
     ofstream dataFile(config.path, ios::app); // Открываем файл в режиме добавления
@@ -131,12 +131,11 @@ int Export(const ExportConfig& config, const CalcResult& calcResult) {
         logAll("Ошибка открытия файла: " + config.path);
         return -1;
     }
-
     // Записываем дату и время в файл
     dataFile << "Result: "; // Форматирую и записываем дату и время
 
     // Записываем данные в файл
-    for (const auto& value : calcResult.result.values) {
+    for (const auto& value : calcResults.result.values) {
         dataFile << value << " "; // Записываем значения вектора
     }
     dataFile << endl; // Переход на новую строку
@@ -148,7 +147,7 @@ int main(int argc, char* argv[])
 { 
     VectorData vector1, vector2;
     CalcProblemParams calcParams;
-    CalcResult calcResult; // Создаем объект для хранения результата
+    CalcResults calcResult; // Создаем объект для хранения результата
     
     for (int i = 1; i < argc; i++) {
     if (string(argv[i]) == "--fp1") {
@@ -198,7 +197,7 @@ int main(int argc, char* argv[])
             conf.path = argv[i + 1]; // Сохраняем путь к файлу
             logAll("Путь и имя выходного файла: " + conf.path);
             // Вызов функции Export с нужными аргументами
-            int exportResult = Export(conf, calcResult);
+            int exportResult = Export(calcResult, conf);
             if (exportResult != 0) {
                 logAll("Ошибка при экспорте данных");
             }
