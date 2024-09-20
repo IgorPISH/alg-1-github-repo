@@ -4,8 +4,8 @@
 #include <chrono> // Для работы с датой
 #include <ctime>  // Для работы с временем
 #include <iomanip> //Используется для управления форматированием ввода и вывода.
-#include <string>     //getline
-#include <sstream>
+#include <string> //Для использования getline
+#include <sstream> // Подключаем библиотеку для работы с потоками строк (istringstream и ostringstream)
 #include <vector> // Для работы с векторами
 
 // Подключаем пространство имен std 
@@ -103,6 +103,26 @@ VectorData Calck_vv_sum(const VectorData& vec1, const VectorData& vec2) {
     return result;
 }
 
+//Функция для вычитания векторов
+VectorData Calck_vv_sub(const VectorData& vec1, const VectorData& vec2) {
+    // Проверка на равенство размерностей
+    if (vec1.size != vec2.size) {
+        logAll("Ошибка! Размерность векторов не совпадает");
+        return VectorData();
+    }
+
+    VectorData result; // Создаем объект для хранения результата вычитания векторов
+    result.size = vec1.size; // Устанавливаем размер результирующего вектора равным размеру первого вектора
+    result.values.resize(result.size); // Изменяем размер массива значений результирующего вектора
+
+    // Вычитание векторов
+    for (int i = 0; i < result.size; ++i) {
+        result.values[i] = vec1.values[i] - vec2.values[i];
+    }
+
+    return result;
+}
+
 int Export(const ExportConfig& config, const CalcResult& calcResult) {
     // Создаю файл и открываю его на дозапись
     logAll("Открываю " +config.path);
@@ -151,7 +171,7 @@ int main(int argc, char* argv[])
                 calcParams.op = CalcProblemParams::operations::vv_sum;
                 logAll("Вызвана операция: суммирование векторов");
                 // Сложение векторов
-                calcResult.result = Calck_vv_sum(vector1, vector2); // Сохраняем результат
+                calcResult.result = Calck_vv_sum(vector1, vector2);
                 // if (calcResult.result.size > 0) {
                 //     cout << "Resulting vector: ";
                 //     for (const auto& value : calcResult.result.values) {
@@ -162,6 +182,7 @@ int main(int argc, char* argv[])
             } else if (operation == "vv_sub") {
                 calcParams.op = CalcProblemParams::operations::vv_sub;
                 logAll("Вызвана операция: вычитание векторов");
+                calcResult.result = Calck_vv_sub(vector1, vector2); 
             } else if (operation == "vv_scMalt") {
                 calcParams.op = CalcProblemParams::operations::vv_scMalt;
                 logAll("Вызвана операция: переумножение векторов");
