@@ -25,6 +25,14 @@ struct VectorData {
     int size;
 };
 
+struct ExportConfig {
+    string path; // Путь к файлу
+};
+
+struct CalcResult {
+    VectorData result; // Результат сложения векторов
+};
+
 int logAll(string data)
 {
     ofstream logFile("log.txt", ios::app); // Открываем файл в режиме добавления
@@ -94,59 +102,90 @@ VectorData Calck_vv_sum(const VectorData& vec1, const VectorData& vec2) {
 
     return result;
 }
- 
+
+int Export(const ExportConfig& config, const CalcResult& calcResult) {
+    // Создаю файл и открываю его на дозапись
+    logAll("Открываю " +config.path);
+    ofstream dataFile(config.path, ios::app); // Открываем файл в режиме добавления
+    if (!dataFile) {
+        logAll("Ошибка открытия файла: " + config.path);
+        return -1;
+    }
+
+    // Записываем дату и время в файл
+    dataFile << "Result: "; // Форматирую и записываем дату и время
+
+    // Записываем данные в файл
+    for (const auto& value : calcResult.result.values) {
+        dataFile << value << " "; // Записываем значения вектора
+    }
+    dataFile << endl; // Переход на новую строку
+    dataFile.close(); // Закрываю файл
+    return 0; 
+}
+
 int main(int argc, char* argv[]) 
 { 
     VectorData vector1, vector2;
     CalcProblemParams calcParams;
+    CalcResult calcResult; // Создаем объект для хранения результата
+    
     for (int i = 1; i < argc; i++) {
-        // cout << "Argument " << i << " : " << argv[i] << endl;
-
-        if (string(argv[i]) == "--fp1") {
-            if (i + 1 < argc) { // Проверка границ
-                calcParams.filePath1 = argv[i + 1];
-                logAll("Путь к файлу 1: " + calcParams.filePath1);
-                vector1 = readDataFromFile(calcParams.filePath1);
-            }
-        }if (string(argv[i]) == "--fp2") {
-            if (i + 1 < argc) { // Проверка границ
-                calcParams.filePath2 = argv[i + 1];
-                logAll("Путь к файлу 2: " + calcParams.filePath2);
-                vector2 = readDataFromFile(calcParams.filePath2);
-            }
-        }if (string(argv[i]) == "--op") {
-            if (i + 1 < argc) { // Проверка границ
-                string operation = argv[i + 1];
-                if (operation == "vv_sum") {
-                    calcParams.op = CalcProblemParams::operations::vv_sum;
-                    logAll("Вызвана операция: суммирование векторов");
-                    // Сложение векторов
-                    VectorData result = Calck_vv_sum(vector1, vector2);
-                    if (result.size > 0) {
-                        cout << "Resulting vector: ";
-                        for (const auto& value : result.values) {
-                            cout << value << " ";
-                        }
-                        cout << endl;
+    if (string(argv[i]) == "--fp1") {
+        if (i + 1 < argc) { // Проверка границ
+            calcParams.filePath1 = argv[i + 1];
+            logAll("Путь к файлу 1: " + calcParams.filePath1);
+            vector1 = readDataFromFile(calcParams.filePath1);
+        }
+    } else if (string(argv[i]) == "--fp2") {
+        if (i + 1 < argc) { // Проверка границ
+            calcParams.filePath2 = argv[i + 1];
+            logAll("Путь к файлу 2: " + calcParams.filePath2);
+            vector2 = readDataFromFile(calcParams.filePath2);
+        }
+    } else if (string(argv[i]) == "--op") {
+        if (i + 1 < argc) { // Проверка границ
+            string operation = argv[i + 1];
+            logAll("Операция: " + operation);
+            if (operation == "vv_sum") {
+                calcParams.op = CalcProblemParams::operations::vv_sum;
+                logAll("Вызвана операция: суммирование векторов");
+                // Сложение векторов
+                calcResult.result = Calck_vv_sum(vector1, vector2); // Сохраняем результат
+                if (calcResult.result.size > 0) {
+                    cout << "Resulting vector: ";
+                    for (const auto& value : calcResult.result.values) {
+                        cout << value << " ";
                     }
-                } else if (operation == "vv_sub") {
-                    calcParams.op = CalcProblemParams::operations::vv_sub;
-                    logAll("Вызвана операция: вычитание векторов");
-                } else if (operation == "vv_scMalt") {
-                    calcParams.op = CalcProblemParams::operations::vv_scMalt;
-                    logAll("Вызвана операция: переумножение векторов");
-                } else {
-                    logAll("Ошибка: неизвестная операция");
+                    cout << endl;
                 }
+            } else if (operation == "vv_sub") {
+                calcParams.op = CalcProblemParams::operations::vv_sub;
+                logAll("Вызвана операция: вычитание векторов");
+            } else if (operation == "vv_scMalt") {
+                calcParams.op = CalcProblemParams::operations::vv_scMalt;
+                logAll("Вызвана операция: переумножение векторов");
             } else {
-                logAll("Ошибка нет аргументов после --o");
+                logAll("Ошибка: неизвестная операция");
             }
+        } else {
+            logAll("Ошибка: нет аргументов после --op");
+        }
+    } else if (string(argv[i]) == "--exp") {
+        if (i + 1 < argc) { // Проверка границ
+            ExportConfig conf;
+            conf.path = argv[i + 1]; // Сохраняем путь к файлу
+            logAll("Путь и имя выходного файла: " + conf.path);
+            // Вызов функции Export с нужными аргументами
+            int exportResult = Export(conf, calcResult);
+            if (exportResult != 0) {
+                logAll("Ошибка при экспорте данных");
+            }
+        } else {
+            logAll("Ошибка: нет аргументов после --exp");
         }
     }
+}
     return 0;
 }
-struct ExportConfig
-{
-    string fn; //file name
-};
 //g++ 1.cpp -o app
