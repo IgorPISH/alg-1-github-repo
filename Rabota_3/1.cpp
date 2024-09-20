@@ -152,13 +152,13 @@ int main(int argc, char* argv[])
                 logAll("Вызвана операция: суммирование векторов");
                 // Сложение векторов
                 calcResult.result = Calck_vv_sum(vector1, vector2); // Сохраняем результат
-                if (calcResult.result.size > 0) {
-                    cout << "Resulting vector: ";
-                    for (const auto& value : calcResult.result.values) {
-                        cout << value << " ";
-                    }
-                    cout << endl;
-                }
+                // if (calcResult.result.size > 0) {
+                //     cout << "Resulting vector: ";
+                //     for (const auto& value : calcResult.result.values) {
+                //         cout << value << " ";
+                //     }
+                //     cout << endl;
+                // }
             } else if (operation == "vv_sub") {
                 calcParams.op = CalcProblemParams::operations::vv_sub;
                 logAll("Вызвана операция: вычитание векторов");
