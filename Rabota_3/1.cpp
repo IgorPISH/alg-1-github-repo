@@ -287,59 +287,56 @@ int Export(const CalcResults& calcResults, const ExportConfig& config) {
     return 0; 
 }
 
-int main(int argc, char* argv[]) 
-{ 
+int main(int argc, char* argv[]) {
     VectorData vector1, vector2;
-    MatrixData matrix1, matrix2; // Добавляем переменные для матриц
+    MatrixData matrix1, matrix2;
     CalcProblemParams calcParams;
-    CalcResults calcResult; // Создаем объект для хранения результата
-    
-     for (int i = 1; i < argc; i++) {
+    CalcResults calcResult;
+
+    for (int i = 1; i < argc; i++) {
         if (string(argv[i]) == "--fp1") {
-            if (i + 1 < argc) { // Проверка границ
+            if (i + 1 < argc) {
                 calcParams.filePath1 = argv[i + 1];
                 logAll("Путь к файлу 1: " + calcParams.filePath1);
                 vector1 = readDataFromFile(calcParams.filePath1);
-            } else {
-                logAll("Ошибка: нет аргумента после --fp1");
-            }
+                i++;} 
         } else if (string(argv[i]) == "--fp2") {
-            if (i + 1 < argc) { // Проверка границ
+            if (i + 1 < argc) {
                 calcParams.filePath2 = argv[i + 1];
                 logAll("Путь к файлу 2: " + calcParams.filePath2);
                 vector2 = readDataFromFile(calcParams.filePath2);
-            } else {
-                logAll("Ошибка: нет аргумента после --fp2");
+                i++;
             }
-        } else if (string(argv[i]) == "--matrix_fp1") {
-            if (i + 1 < argc) { // Проверка границ
+        } if (string(argv[i]) == "--matrix_fp1") {
+            if (i + 1 < argc) {
                 calcParams.filePath1 = argv[i + 1];
                 logAll("Путь к файлу матрицы 1: " + calcParams.filePath1);
                 matrix1 = readMatrixFromFile(calcParams.filePath1);
+                i++;
             } else {
                 logAll("Ошибка: нет аргумента после --matrix_fp1");
             }
-        } else if (string(argv[i]) == "--matrix_fp2") {
-            if (i + 1 < argc) { // Проверка границ
+        } if (string(argv[i]) == "--matrix_fp2") {
+            if (i + 1 < argc) {
                 calcParams.filePath2 = argv[i + 1];
                 logAll("Путь к файлу матрицы 2: " + calcParams.filePath2);
                 matrix2 = readMatrixFromFile(calcParams.filePath2);
+                i++;
             } else {
                 logAll("Ошибка: нет аргумента после --matrix_fp2");
             }
         } else if (string(argv[i]) == "--op") {
-            if (i + 1 < argc) { // Проверка границ
+            if (i + 1 < argc) {
                 string operation = argv[i + 1];
                 logAll("Операция: " + operation);
                 if (operation == "vv_sum") {
                     calcParams.op = CalcProblemParams::operations::vv_sum;
                     logAll("Вызвана операция: суммирование векторов");
-                    // Сложение векторов
                     calcResult.result = Calck_vv_sum(vector1, vector2);
                 } else if (operation == "vv_sub") {
                     calcParams.op = CalcProblemParams::operations::vv_sub;
                     logAll("Вызвана операция: вычитание векторов");
-                    calcResult.result = Calck_vv_sub(vector1, vector2); 
+                    calcResult.result = Calck_vv_sub(vector1,vector2);
                 } else if (operation == "mm_sum") {
                     calcParams.op = CalcProblemParams::operations::mm_sum;
                     logAll("Вызвана операция: суммирование матриц");
