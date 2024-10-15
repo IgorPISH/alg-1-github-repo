@@ -342,12 +342,12 @@ int main(int argc, char* argv[]) {
                     logAll("Вызвана операция: суммирование матриц");
                     calcResult.matrixResult = Calck_mm_sum(matrix1, matrix2);
                     // Вывод результата сложения матриц
-                    for (unsigned i = 0; i < calcResult.matrixResult.rows; ++i) {
-                        for (unsigned j = 0; j < calcResult.matrixResult.cols; ++j) {
-                            cout << calcResult.matrixResult.matrix.getElement(i, j) << " ";
-                        }
-                        cout << endl; // Переход на новую строку после каждой строки матрицы
-                    }
+                    // for (unsigned i = 0; i < calcResult.matrixResult.rows; ++i) {
+                    //     for (unsigned j = 0; j < calcResult.matrixResult.cols; ++j) {
+                    //         cout << calcResult.matrixResult.matrix.getElement(i, j) << " ";
+                    //     }
+                    //     cout << endl; // Переход на новую строку после каждой строки матрицы
+                    // }
                 } else {
                     logAll("Ошибка: неизвестная операция");
                 }
@@ -373,3 +373,6 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 //g++ 1.cpp -o app
+//./app --fp1 vec1.txt --fp2 vec2.txt --op vv_sum --exp sum_data.txt
+//./app --fp1 vec1.txt --fp2 vec2.txt --op vv_sub --exp sub_data.txt
+//./app --matrix_fp1 mat1.txt --matrix_fp2 mat2.txt --op mm_sum --exp matrix_sum_res.txt

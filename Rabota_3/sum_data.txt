@@ -1,3 +1,1 @@
-Result: -5 2 7 22 -25 
-Vector Result: -5 2 7 22 -25 
 Vector Result: -5 2 7 22 -25 
