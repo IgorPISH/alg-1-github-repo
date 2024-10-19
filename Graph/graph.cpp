@@ -39,6 +39,13 @@ template <class V, class E>
 class Vertex {
 public:
 
+    // Деструктор
+    ~Vertex() {
+        // Освобождаем память, выделенную для рёбер
+        for (Edge<V, E>* edge : edges_) {
+            delete edge; // Удаляем каждое ребро
+        }
+    }
     // Метод для вывода информации о вершине и её рёбрах
     void print() const {
         cout << "Вершина: " << properties_ << endl;
@@ -224,4 +231,4 @@ int main() {
 }
 
 //g++ graph.cpp -o graph
-//./graph
+//.\graph
