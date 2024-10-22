@@ -3,6 +3,14 @@
 #include <string>   // Подключение библиотеки для работы со строками
 #include <algorithm> // Подключение библиотеки для алгоритмов, таких как find
 #include <windows.h> // Подключение библиотеки для работы с Windows API (нужно для установки кодировки UTF-8 в PowerShel или CMD)
+#include <limits>       // Для использования numeric_limits
+#include <queue>        // Для использования приоритетной очереди
+#include <unordered_map> // Для использования хеш-таблицы (unordered_map)
+#include <iostream>
+#include <fstream>  // Подключает библиотеку для работы с файлами, которая предоставляет классы для чтения и записи в файлы
+#include <string>
+#include <vector>
+#include <map>
 
 using namespace std;
 
@@ -180,51 +188,153 @@ bool search(const Vertex<V, E>* vertex, const V& targetName, vector<const Vertex
     return false;
 }
 
+// Алгоритм Дейкстры для нахождения кратчайших путей
+template <class V, class E>
+void diikstra(const Vertex<V, E>* start) {
+    // Хранение расстояний до каждой вершины
+    unordered_map<const Vertex<V, E>*, int> distances;
+    // Хранение предшественников для восстановления пути
+    unordered_map<const Vertex<V, E>*, const Vertex<V, E>*> previous;
+
+    // Инициализация расстояний
+    for (const Edge<V, E>* edge : *start->getEdges()) {
+        const Vertex<V, E>* neighbor = edge->getVertex2();
+        distances[neighbor] = numeric_limits<int>::max(); // Устанавливаем начальное расстояние как бесконечность
+    }
+    distances[start] = 0; // Расстояние до самой себя равно 0
+
+    // Используем приоритетную очередь для хранения вершин по расстоянию
+    auto cmp = [](pair<const Vertex<V, E>*, int>& a, pair<const Vertex<V, E>*, int>& b) {
+        return a.second > b.second; // Сравниваем по расстоянию
+    };
+    priority_queue<pair<const Vertex<V, E>*, int>, vector<pair<const Vertex<V, E>*, int>>, decltype(cmp)> pq(cmp);
+    pq.push({start, 0}); // Добавляем начальную вершину в очередь
+
+    while (!pq.empty()) {
+        const Vertex<V, E>* current = pq.top().first; // Текущая вершина
+        pq.pop();
+
+        // Проходим по всем рёбрам текущей вершины
+        for (const Edge<V, E>* edge : *current->getEdges()) {
+            const Vertex<V, E>* neighbor = edge->getVertex2();
+            int newDist = distances[current] + *edge->getProperties(); // Рассчитываем новое расстояние
+
+            // Если найдено более короткое расстояние
+            if (newDist < distances[neighbor]) {
+                distances[neighbor] = newDist; // Обновляем расстояние
+                previous[neighbor] = current; // Обновляем предшественника
+                pq.push({neighbor, newDist}); // Добавляем в очередь
+            }
+        }
+    }
+
+    // Выводим результаты
+    for (const auto& pair : distances) {
+        cout << "Расстояние до вершины " << *(pair.first->getProperties()) 
+             << " равно " << pair.second << endl;
+    }
+}
+
+vector<string> readVershina(const string& filename) {
+    ifstream file(filename);
+    
+    // Проверяем, открыт ли файл
+    if (!file.is_open()) {
+        return {}; // Возвращаем пустой вектор, если файл не найден
+    }
+
+    vector<string> lines; // Вектор для хранения строк
+    string line;
+
+    // Читаем строки из файла
+    while (getline(file, line) && lines.size() < 3) {
+        lines.push_back(line); // Добавляем строку в вектор
+    }
+
+    return lines; // Возвращаем вектор строк
+}
+
 int main() {
     // Устанавливаем кодовую страницу консоли на UTF-8
     SetConsoleOutputCP(CP_UTF8);
     // Создание графа
-    Vertex<string, int> a1("A1");
-    Vertex<string, int> b1("B1");
-    Vertex<string, int> c1("C1");
-    Vertex<string, int> b2("B2");
-    Vertex<string, int> e1("E1");
-    Vertex<string, int> f1("F1");
-    Vertex<string, int> b3("B3");
+    Vertex<string, int> A1("A1");
+    Vertex<string, int> B1("B1");
+    Vertex<string, int> C1("C1");
+    Vertex<string, int> B2("B2");
+    Vertex<string, int> E1("E1");
+    Vertex<string, int> F1("F1");
+    Vertex<string, int> B3("B3");
 
     // Добавление рёбер с указанием стоимости
-    a1.addEdge(10, &b1);
-    b1.addEdge(20, &c1);
-    a1.addEdge(15, &b2);
-    c1.addEdge(30, &e1);
-    e1.addEdge(25, &f1);
-    b2.addEdge(40, &f1);
-    a1.addEdge(10, &b3);
-    b3.addEdge(12, &c1);
+    A1.addEdge(10, &B1);
+    B1.addEdge(20, &C1);
+    A1.addEdge(15, &B2);
+    C1.addEdge(30, &E1);
+    E1.addEdge(25, &F1);
+    B2.addEdge(40, &F1);
+    A1.addEdge(10, &B3);
+    B3.addEdge(12, &C1);
 
     // Вызов метода print для каждой вершины
-    a1.print();
-    b1.print();
-    c1.print();
-    b2.print();
-    e1.print();
-    f1.print();
-    b3.print();
+    A1.print();
+    B1.print();
+    C1.print();
+    B2.print();
+    E1.print();
+    F1.print();
+    B3.print();
 
     // Пример поиска пути
     vector<const Vertex<string, int>*> visited; // Вектор для хранения посещенных вершин
     int cost = 0; // Переменная для хранения стоимости пути
 
-  // Использование посетителя для обхода графа
-    OneTimeVisitor<string, int> visitor;
-    cout << "Обход графа с использованием OneTimeVisitor:" << endl;
-    depthPass(&a1, &visitor); 
+    map<string, Vertex<string, int>*> vertexMap;
+    vertexMap["A1"] = &A1;
+    vertexMap["B1"] = &B1;
+    vertexMap["C1"] = &C1;
+    vertexMap["B2"] = &B2;
+    vertexMap["E1"] = &E1;
+    vertexMap["F1"] = &F1;
+    vertexMap["B3"] = &B3;
 
- // Передаею строку как string
-    if (search(&a1, string("E1"), visited, cost)) {
-        cout << "Путь найден, стоимость: " << cost << endl;
+    string filename = "vershina.txt"; // Имя файла
+    vector<string> vershina = readVershina(filename); // Читаем вершины из файла
+
+    // Проверяем, прочитали ли мы две строки
+    if (vershina.size() < 3) {
+        cout << "Файл не найден или содержит менее трёх строк." << endl;
+        return 1; // Завершаем программу, если не удалось прочитать две строки
+    }
+
+    string firstVershina = vershina[0];
+    string secondVershina = vershina[1];
+    string diikstraVershina = vershina[2];
+    // Поиск первой вершины в отображении
+    auto it = vertexMap.find(firstVershina);
+    if (it != vertexMap.end()) {
+        // Если вершина найдена, запускаем алгоритмы
+        // Использование посетителя для обхода графа
+        OneTimeVisitor<string, int> visitor;
+        cout << "Обход графа с использованием OneTimeVisitor:" << endl;
+        depthPass(it->second, &visitor); 
+
+        // Запускаем алгоритм Дейкстры от второй вершины
+        auto itDijkstra = vertexMap.find(secondVershina);
+        if (itDijkstra != vertexMap.end()) {
+            // Передаем строку как string для поиска
+            if (search(it->second, secondVershina, visited, cost)) {
+                cout << "Путь найден, стоимость: " << cost << endl;
+            } else {
+                cout << "Путь не найден." << endl;
+            }
+            cout << "Запускаем алгоритм Дейкстры от вершины: " << diikstraVershina << endl;
+            diikstra(itDijkstra->second); // Запускаем алгоритм Дейкстры от найденной вершины
+        } else {
+            cout << "Вершина для алгоритма Дейкстры не найдена в графе." << endl;
+        }
     } else {
-        cout << "Путь не найден." << endl;
+        cout << "Вершина не найдена в графе." << endl;
     }
 
     return 0;
