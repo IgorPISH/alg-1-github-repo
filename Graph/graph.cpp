@@ -6,10 +6,8 @@
 #include <limits>       // Для использования numeric_limits
 #include <queue>        // Для использования приоритетной очереди
 #include <unordered_map> // Для использования хеш-таблицы (unordered_map)
-#include <iostream>
 #include <fstream>  // Подключает библиотеку для работы с файлами, которая предоставляет классы для чтения и записи в файлы
 #include <string>
-#include <vector>
 #include <map>
 
 using namespace std;
