@@ -8,6 +8,26 @@ using namespace std;
 
 const int mf = 500;
 
+// Класс для вектора
+class Vector {
+private:
+    vector<double> data;
+public:
+    Vector(int size) : data(size) {}
+
+    double& operator[](int index) {
+        return data[index];
+    }
+
+    const double& operator[](int index) const {
+        return data[index];
+    }
+
+    int size() const {
+        return data.size();
+    }
+};
+
 // Функция для ввода параметров
 void inputParameters(int &N, double &t_end, double &L, double &lamda, double &ro, double &c, double &T0, double &Tl, double &Tr) {
     cout << "Введите количество пространственных узлов, N: ";
