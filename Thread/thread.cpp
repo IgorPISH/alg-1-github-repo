@@ -9,13 +9,23 @@ void print_hello()
     cout<<"Hello from thread 2"<<endl;
 }
 
+//Создаем массив потоков
+
 int main()
 {
-    cout <<"MAAAAAAAAAAAAAAAAAAAAAAIN"<<endl;
     vector<thread> threads;
     for (int i=0; i<8; i++)
     {
         threads.push_back(thread(print_hello));
+    }
+    cout <<"MAAAAAAAAAAAAAAAAAAAAAAIN"<<endl;
+    //Ожидаем присоединения потока
+    for (auto& th: threads)
+    {
+        if (th.joinable())
+        {
+            th.join();
+        }
     }
 
     return 0;
