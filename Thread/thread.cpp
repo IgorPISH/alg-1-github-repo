@@ -10,9 +10,9 @@ mutex coutMutex; // Глобальный объект блокировки
 
 void print_hello()
 {
-    coutMutex.lock();
-    cout<<"Hello from thread 2"<<endl;
-    coutMutex.unlock();
+    //Выводим ID потока
+    auto id=std::this_thread::get_id();
+    cout<<id<<endl;
 }
 
 //Версия кода с блокировками
