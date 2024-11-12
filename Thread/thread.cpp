@@ -10,7 +10,7 @@ void print_hello()
 }
 
 //Создаем массив потоков
-
+// Потоки будут в состоянии гонки, поэтому текст будет выводиться не одинаково, возможно даже будет так: Hello from thread 2Hello from thread 2
 int main()
 {
     vector<thread> threads;
