@@ -7,12 +7,14 @@ using namespace std;
 
 mutex coutMutex; // Глобальный объект блокировки
 
-
 void print_hello()
 {
+    //Добавил блокировку
+    coutMutex.lock();
     //Выводим ID потока
     auto id=std::this_thread::get_id();
     cout<<id<<endl;
+    coutMutex.unlock();
 }
 
 //Версия кода с блокировками
