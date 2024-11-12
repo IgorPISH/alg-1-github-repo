@@ -3,8 +3,11 @@
 #include <thread>
 #include <numeric> // для accumulate
 #include <mutex>   // для mutex
+#include <chrono>  // для измерения времени
 
 using namespace std;
+using namespace std::chrono; // для удобства
+
 // Глобальная переменная для синхронизации вывода
 mutex output_mutex;
 
@@ -33,8 +36,13 @@ int main() {
 
     if (mode == 1) {
         // Однопоточная работа
+        auto start_time = high_resolution_clock::now(); // Начало измерения времени
         double total_sum = partial_sum(arr, 0, SIZE);
+        auto end_time = high_resolution_clock::now(); // Конец измерения времени
+
+        auto duration = duration_cast<microseconds>(end_time - start_time); // Вычисление продолжительности
         cout << "Total sum: " << total_sum << endl;
+        cout << "Execution time (single thread): " << duration.count() << " microseconds" << endl;
     } else if (mode == 2) {
         // Многопоточная работа
         size_t num_threads;
@@ -51,6 +59,8 @@ int main() {
         vector<double> results(num_threads);
         size_t chunk_size = SIZE / num_threads;
 
+        auto start_time = high_resolution_clock::now(); // Начало измерения времени
+
         // Запуск потоков
         for (size_t i = 0; i < num_threads; ++i) {
             size_t start = i * chunk_size;
@@ -65,7 +75,11 @@ int main() {
 
         // Суммируем результаты
         double total_sum = accumulate(results.begin(), results.end(), 0.0);
+        auto end_time = high_resolution_clock::now(); // Конец измерения времени
+
+        auto duration = duration_cast<microseconds>(end_time - start_time); // Вычисление продолжительности
         cout << "Total sum: " << total_sum << endl;
+        cout << "Execution time (multi-threaded): " << duration.count() << " microseconds" << endl;
     } else {
         cerr << "Invalid mode selected." << endl;
         return 1;
