@@ -8,7 +8,7 @@ using namespace std;
 mutex coutMutex; // Глобальный объект блокировки
 
 //Все параметры, передаваемые в конструктор копируются
-void print_hello(int id, double sum)
+void print_hello(int id, double& sum)
 {
     //Добавил блокировку
     coutMutex.lock();
@@ -26,7 +26,8 @@ int main()
     vector<thread> threads;
     for (int i=0; i<8; i++)
     {
-        threads.push_back(thread(print_hello, i, sum));
+        //Передаём по ссылке значение
+        threads.push_back(thread(print_hello, i, ref(sum)));
     }
     //Ожидаем присоединения потока
     for (auto& th: threads)
