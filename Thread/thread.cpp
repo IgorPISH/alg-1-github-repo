@@ -7,13 +7,13 @@ using namespace std;
 
 mutex coutMutex; // Глобальный объект блокировки
 
-void print_hello()
+void print_hello(double a)
 {
     //Добавил блокировку
     coutMutex.lock();
     //Выводим ID потока
     auto id=std::this_thread::get_id();
-    cout<<id<<endl;
+    cout<<"Thread: "<<id<<" a: "<<a<<endl;
     coutMutex.unlock();
 }
 
@@ -24,7 +24,7 @@ int main()
     vector<thread> threads;
     for (int i=0; i<8; i++)
     {
-        threads.push_back(thread(print_hello));
+        threads.push_back(thread(print_hello, i*0.1));
     }
     //Ожидаем присоединения потока
     for (auto& th: threads)
