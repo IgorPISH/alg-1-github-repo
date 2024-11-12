@@ -18,12 +18,12 @@ void print_hello()
 //Версия кода с блокировками
 int main()
 {
+    cout <<"MAAAAAAAAAAAAAAAAAAAAAAIN"<<endl;
     vector<thread> threads;
     for (int i=0; i<8; i++)
     {
         threads.push_back(thread(print_hello));
     }
-    cout <<"MAAAAAAAAAAAAAAAAAAAAAAIN"<<endl;
     //Ожидаем присоединения потока
     for (auto& th: threads)
     {
